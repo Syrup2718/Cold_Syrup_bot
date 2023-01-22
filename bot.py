@@ -17,5 +17,4 @@ async def on_member_join(member):
 async def on_member_remove(member):
     print(f"{member} leave!")
 
-
-bot.run("MTA2NDc3MzQ3MzEyNzM2NjcwNw.Gp7cTs.iIdpxoC_URWvX_5gCGPgZYHyh7mgelJPYLA0P0")
+bot.run("MTA2NDc3MzQ3MzEyNzM2NjcwNw.GxSyaM.pPbcJuGmkL0heWJm_qa0RoZ4R4gYH1jK4VzcuA")
