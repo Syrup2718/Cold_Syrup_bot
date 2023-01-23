@@ -1,9 +1,8 @@
 import discord
 from discord.ext import commands 
 
-intents = discord.Intents.default()
-intents.message_content = True
-bot = commands.Bot(command_prefix='[', intents=intents)
+intents = discord.Intents.all()
+bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
@@ -12,9 +11,14 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
     print(f"{member} join!")
+    channel = bot.get_channel(886002454238486588)
+    await channel.send(f"{member} join!")
 
 @bot.event
 async def on_member_remove(member):
     print(f"{member} leave!")
+    channel = bot.get_channel(886006875982798848)
+    await channel.send(f"{member} leave!")
+
 
 bot.run("MTA2NDc3MzQ3MzEyNzM2NjcwNw.GAMZuz.UVV0xEy5G16a3023lKr5I-607rXUNdxDvez2tU")
