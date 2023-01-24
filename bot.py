@@ -1,6 +1,13 @@
 import discord
 from discord.ext import commands 
+import json
+import random
+import requests
+from bs4 import BeautifulSoup
+import os   
 
+with open("setting.json", "r", encoding="utf-8" ) as setting:
+    setting = json.load(setting)
 
 intents = discord.Intents.all()
 bot = commands.Bot(command_prefix='!', intents=intents)
@@ -12,18 +19,21 @@ async def on_ready():
 @bot.event
 async def on_member_join(member):
     print(f"{member} join!")
-    channel = bot.get_channel(886002454238486588)
+    channel = bot.get_channel(setting["Welcome_channel"])
     await channel.send(f"{member} join!")
-
+    
 @bot.event
 async def on_member_remove(member):
     print(f"{member} leave!")
-    channel = bot.get_channel(886006875982798848)
+    channel = bot.get_channel(setting["Leave_channel"])
     await channel.send(f"{member} leave!")
 
-@bot.command()
-async def ping(ctx):
-    await ctx.send(f"現在延遲 {round(bot.latency * 1000)} ms") 
+for filename in os.listdir('./cmds'):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cmds.{filename[:-3]}")
+        print(f"cmds.{filename[:-3]}")
 
 
-bot.run("MTA2NDc3MzQ3MzEyNzM2NjcwNw.GAMZuz.UVV0xEy5G16a3023lKr5I-607rXUNdxDvez2tU")  
+if __name__ == "__main__":
+    bot.run(setting["TOKEN"])    
+
