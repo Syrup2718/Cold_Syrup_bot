@@ -5,6 +5,8 @@ import random
 import requests
 from bs4 import BeautifulSoup
 from core.classes import Cog_Extension
+import discord
+from discord.ext import commands 
 
 
 with open("setting.json", "r", encoding="utf-8" ) as setting:
@@ -17,5 +19,5 @@ class React(Cog_Extension):
         pic = discord.File()
         await ctx.send(file= pic)
 
-def setup(bot):
-    bot.add_cog(React(bot))
+async def setup(bot):
+    await bot.add_cog(React(bot))
