@@ -14,26 +14,12 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
+    for filename in os.listdir('./cmds'):
+        if filename.endswith(".py"):
+            await bot.load_extension(f"cmds.{filename[:-3]}")
+            print(f"cmds.{filename[:-3]}")
     print(">> Bot is online <<")
-
-@bot.event
-async def on_member_join(member):
-    print(f"{member} join!")
-    channel = bot.get_channel(setting["Welcome_channel"])
-    await channel.send(f"{member} join!")
-    
-@bot.event
-async def on_member_remove(member):
-    print(f"{member} leave!")
-    channel = bot.get_channel(setting["Leave_channel"])
-    await channel.send(f"{member} leave!")
-
-for filename in os.listdir('./cmds'):
-    if filename.endswith(".py"):
-        bot.load_extension(f"cmds.{filename[:-3]}")
-        print(f"cmds.{filename[:-3]}")
 
 
 if __name__ == "__main__":
     bot.run(setting["TOKEN"])    
-
