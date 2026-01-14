@@ -1,1 +1,0 @@
-await bot.load_extension(f"cmds.{filename[:-3]}")
