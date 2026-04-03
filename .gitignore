@@ -1,2 +1,4 @@
-*.test
-
+/test*
+venv/
+/test.py
+setting.json
