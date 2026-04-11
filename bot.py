@@ -3,6 +3,9 @@ from discord.ext import commands
 import json
 import os
 import asyncio
+from database.db import init_db
+
+init_db()
 
 ID = 1461387152326787094
 
@@ -21,10 +24,12 @@ async def on_ready():
     print(".. 𖥧 𖥧 𖧧 ˒˒. . 𖡼.𖤣𖥧 ⠜ . . 𖥧 𖥧 𖧧 ˒˒. . 𖡼.𖤣𖥧 ⠜. . 𖥧 𖥧 𖧧 ˒˒..")
     print(f"該吃藥啦 不然我要來把你們抓走惹")
     print(f"{bot.user} 起床了喔 (ID: {bot.user.id})")
-    
+
+    print(".. 𖥧 𖥧 𖧧 ˒˒. . 𖡼.𖤣𖥧 ⠜ . . 𖥧 𖥧 𖧧 ˒˒. . 𖡼.𖤣𖥧 ⠜. . 𖥧 𖥧 𖧧 ˒˒..")
     slash = await bot.tree.sync()
-    print(f"Synced {slash} commands")
-    print(f"載入 {len(slash)} 個指令")
+    print(f"總共載入 {len(slash)} 個指令")
+    await bot.change_presence(status=discord.Status.online, activity=discord.Activity(type=discord.ActivityType.playing, name="把泥抓去賣掉！！！"))
+
 
 
 async def load_extensions():
