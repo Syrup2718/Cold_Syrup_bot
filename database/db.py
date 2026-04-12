@@ -44,3 +44,35 @@ def init_db():
     conn.close()
 
 
+def init_word_freq_table():
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS word_frequency (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            guild_id TEXT NOT NULL,
+            word TEXT NOT NULL,
+            count INTEGER NOT NULL,
+            date TEXT NOT NULL,
+            scope TEXT NOT NULL  -- 'day', 'week', 'month'
+        )
+    ''')
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_word_frequency_guild
+        ON word_frequency(guild_id)
+    """)
+    
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_word_frequency_word
+        ON word_frequency(word)
+    """)
+
+    cursor.execute("""
+        CREATE INDEX IF NOT EXISTS idx_word_frequency_date
+        ON word_frequency(date)
+    """)
+
+    conn.commit()
+    conn.close()
