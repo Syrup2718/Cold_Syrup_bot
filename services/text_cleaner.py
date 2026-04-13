@@ -30,3 +30,5 @@ def tokenize(content: str):
     normalized = normalize_mentions_and_emojis(cleaned)
     # 中文斷詞 + 英文分詞
     return list(jieba.cut(normalized))
+
+print(tokenize("早安"))
