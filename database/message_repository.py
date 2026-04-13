@@ -1,6 +1,15 @@
 from database.db import get_connection
 import datetime
 
+def to_utc_iso(dt: datetime.datetime) -> str:
+    # 確保時間統一為 UTC ISO 格式
+    if dt.tzinfo is None:
+        dt = dt.astimezone(datetime.timezone.utc)
+    else:
+        dt = dt.astimezone(datetime.timezone.utc)
+    return dt.isoformat()
+
+
 def insert_msg(message_id, guild_id, channel_id, author_id, author_name, content, created_at):
     conn = get_connection()
     cursor = conn.cursor()
@@ -72,8 +81,12 @@ def get_member_activity(guild_id, days=1, top=5):
     conn = get_connection()
     cursor = conn.cursor()
 
-    end_time = datetime.datetime.now().isoformat()
-    start_time = (datetime.datetime.now() - datetime.timedelta(days=days)).isoformat()
+    # 統一轉成 UTC ISO 格式
+    now = datetime.datetime.now(datetime.timezone.utc)
+    end_time = to_utc_iso(now)
+    start_time = to_utc_iso(now - datetime.timedelta(days=days))
+
+    print("查詢範圍:", start_time, "→", end_time)
 
     cursor.execute("""
         SELECT author_id, author_name, COUNT(*) as message_count
@@ -87,4 +100,4 @@ def get_member_activity(guild_id, days=1, top=5):
 
     rows = cursor.fetchall()
     conn.close()
-    return 
+    return rows

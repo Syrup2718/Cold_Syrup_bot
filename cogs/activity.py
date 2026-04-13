@@ -1,6 +1,9 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
+from database.message_repository import get_member_activity
+import matplotlib.pyplot as plt
+
 
 class Activity(commands.Cog):
     def __init__(self, bot):
@@ -10,7 +13,18 @@ class Activity(commands.Cog):
     @app_commands.describe(days="幾天之內，預設為 1")
     @app_commands.describe(top="顯示前幾名，預設為 5")
     async def memberactivity(self, interaction: discord.Interaction, days: int = 1, top: int = 5):
-        print(interaction.guild.id)
+        guild_id = str(interaction.guild.id)
+        rows = get_member_activity(guild_id, days, top)
+        
+        if not rows:
+            await interaction.response.send_message(f"最近 {days} 天沒有活動紀錄。")
+            return
+
+        result = "\n".join([f"{i+1}. <@{row[0]}>: {row[2]} 則訊息"
+                            for i, row in enumerate(rows)])
+        # result = "\n".join([f"{i+1}. {row[1]}: {row[2]} 則訊息"
+        #                     for i, row in enumerate(rows)])
+        await interaction.response.send_message(f"📈 最近 {days} 天內最活躍前 {top} 名成員：\n{result}")
 
 
     @commands.Cog.listener()
