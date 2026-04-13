@@ -86,8 +86,6 @@ def get_member_activity(guild_id, days=1, top=5):
     end_time = to_utc_iso(now)
     start_time = to_utc_iso(now - datetime.timedelta(days=days))
 
-    print("查詢範圍:", start_time, "→", end_time)
-
     cursor.execute("""
         SELECT author_id, author_name, COUNT(*) as message_count
         FROM messages

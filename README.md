@@ -8,8 +8,10 @@
 
 
 ## 目前已有功能
-1. 喵喵叫
-2. 
+1. /meow {num}
+    > 可以喵喵叫
+2. /memberactivty {days} {top}
+    > 看看誰是話癆   
 
 
 made by Syrup2718 
