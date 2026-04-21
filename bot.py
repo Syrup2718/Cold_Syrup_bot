@@ -10,8 +10,8 @@ init_db()
 ID = 1461387152326787094
 
 with open("setting.json", "r") as f:
-    token = json.load(f)["TOKEN"]
-
+    token = json.load(f)["TOKEN"]   
+    
 print(token)
 
 intents = discord.Intents.all()

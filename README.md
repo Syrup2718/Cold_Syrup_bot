@@ -12,6 +12,7 @@
     > 可以喵喵叫
 2. /memberactivty {days} {top}
     > 看看誰是話癆   
-
+3. /myactivity {days}
+    > 看看自己說了多少話
 
 made by Syrup2718 

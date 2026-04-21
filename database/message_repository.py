@@ -39,6 +39,7 @@ def insert_msg(message_id, guild_id, channel_id, author_id, author_name, content
     conn.close()
 
 
+
 def get_recent_messages(limit=10):
     conn = get_connection()
     cursor = conn.cursor()
@@ -81,7 +82,6 @@ def get_member_activity(guild_id, days=1, top=5):
     conn = get_connection()
     cursor = conn.cursor()
 
-    # 統一轉成 UTC ISO 格式
     now = datetime.datetime.now(datetime.timezone.utc)
     end_time = to_utc_iso(now)
     start_time = to_utc_iso(now - datetime.timedelta(days=days))
@@ -99,3 +99,36 @@ def get_member_activity(guild_id, days=1, top=5):
     rows = cursor.fetchall()
     conn.close()
     return rows
+
+
+def get_user_activity(guild_id, user_id, days=1):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    end_time = now.isoformat()
+    start_time = (now - datetime.timedelta(days=days)).isoformat()
+
+    # 個人訊息數
+    cursor.execute("""
+        SELECT COUNT(*) 
+        FROM messages
+        WHERE guild_id = ?
+          AND author_id = ?
+          AND created_at BETWEEN ? AND ?
+    """, (guild_id, str(user_id), start_time, end_time))
+    user_count = cursor.fetchone()[0]
+
+    # 群組總訊息數
+    cursor.execute("""
+        SELECT COUNT(*)
+        FROM messages
+        WHERE guild_id = ?
+          AND created_at BETWEEN ? AND ?
+    """, (guild_id, start_time, end_time))
+    total_count = cursor.fetchone()[0]
+
+    conn.close()
+    return user_count, total_count
+
+

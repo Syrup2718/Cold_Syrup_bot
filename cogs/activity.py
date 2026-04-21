@@ -1,13 +1,13 @@
 import discord
 from discord.ext import commands
 from discord import app_commands
-from database.message_repository import get_member_activity
+from database.message_repository import get_member_activity, get_user_activity
 import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import io
 
-rcParams['font.sans-serif'] = ['Microsoft JhengHei']  
-rcParams['axes.unicode_minus'] = False 
+rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Noto Sans CJK TC', 'Noto Emoji']
+
 
 class Activity(commands.Cog):
     def __init__(self, bot):
@@ -28,7 +28,7 @@ class Activity(commands.Cog):
         counts = [row[2] for row in rows]   
         
         fig, ax = plt.subplots()
-        print(fig, ax)
+        
         ax.pie(
             counts,
             textprops={'color':'w', 'weight':'bold', 'size':12},
@@ -63,13 +63,70 @@ class Activity(commands.Cog):
         embed.set_image(url="attachment://activity.png")
         
         await interaction.response.send_message(file=file, embed=embed)
+
+
+    @app_commands.command(name="myactivity", description="看看自己有多話癆")
+    @app_commands.describe(days="幾天之內，預設為 1")
+    async def myactivity(self, interaction: discord.Interaction, days: int = 1):
+        guild_id = str(interaction.guild.id)
+        user_id = interaction.user.id
+
+        user_count, total_count = get_user_activity(guild_id, user_id, days)
+        ratio = (user_count / total_count * 100) if total_count > 0 else 0
+
+        # 評語邏輯
+        if ratio < 10:
+            comment = "🤐 你為什麼不說話？是不是不愛聊天呢..."
+        elif ratio < 20:
+            comment = "😶 這麼安靜的嗎？感覺你很低調。"
+        elif ratio < 40:
+            comment = "🙂 你算是有點存在感，偶爾冒泡。"
+        elif ratio < 60:
+            comment = "🗣️ 哇，你在群組裡很活躍！"
+        else:
+            comment = "🔥 你根本是群組的話癆王！"
+
+        # 圓餅圖資料
+        labels = [interaction.user.display_name, "其他人"]
+        sizes = [user_count, total_count - user_count]
+
+        fig, ax = plt.subplots()
+        ax.pie(
+            sizes,
+            labels=labels,
+            autopct='%1.1f%%',
+            explode=[0.1, 0],
+            startangle=140,
+            labeldistance=1.1,  # 名字放到圓餅圖內
+            pctdistance=0.8,      # 百分比文字位置
+            textprops={'color':'w','weight':'bold','size':12}
+        )
+        ax.axis('equal')
+
+        buf = io.BytesIO()
+        plt.savefig(buf, format='png', bbox_inches='tight', transparent=True)
+        buf.seek(0)
+        plt.close(fig)
         
+        embed = discord.Embed(
+            title="🗣️ 個人活躍度查詢",
+            description=(
+                f"在最近 **{days} 天** 內，<@{user_id}> 說了 **{user_count}** 則訊息。\n"
+                f"佔整個群組的 **{ratio:.1f}%**。\n\n"
+                f"{comment}"
+            ),
+            color=discord.Color.purple()
+        )
+        file = discord.File(buf, filename="myactivity.png")
+        embed.set_image(url="attachment://myactivity.png")
         
+        await interaction.response.send_message(file=file, embed=embed)
+
+
 
     @commands.Cog.listener()
     async def on_ready(self):
         print("Activity cog 已載入")
 
 async def setup(bot):
-    
     await bot.add_cog(Activity(bot))
