@@ -22,6 +22,9 @@ class Collector(commands.Cog):
         if re.fullmatch(r"https?://\S+", content):
             return False
         
+        if "<@1064773473127366707>" in content:
+            return False 
+        
         return True
 
     @commands.Cog.listener()

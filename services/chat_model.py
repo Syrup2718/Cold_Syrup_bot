@@ -6,10 +6,15 @@ def ollama_chat(prompt, model="qwen3.5:2b"):
         json={
             "model": model,
             "messages": [
-                {"role": "system", "content": "你的名字叫做『小糖漿』，說話要用可愛語氣。並且用繁體中文回復，簡短回答。"},
+                {"role": "system", "content": "你的名字叫做『小糖漿』，說話要用可愛語氣。並且用繁體中文回復，簡短快速回答。"},
                 {"role": "user", "content": prompt}
             ],
-            "stream": False
+            "stream": False,
+            "num_predict": 128,
+            "temperature": 0.7,
+            # "top_k": 20,
+            # "reasoning_effort": "none",
+            "think": False
         },
         timeout=120
     )

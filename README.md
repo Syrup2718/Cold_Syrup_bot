@@ -14,5 +14,12 @@
     > 看看誰是話癆   
 3. /myactivity {days}
     > 看看自己說了多少話
+4. /chat {content}
+    > 跟AI對話
+
+
+## 非指令功能
+1. TAG機器人對話
+
 
 made by Syrup2718 
