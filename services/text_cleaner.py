@@ -33,4 +33,26 @@ def tokenize(content: str):
     # 中文斷詞 + 英文分詞
     return list(jieba.cut(normalized))
 
-print(tokenize("早安"))
+
+# 抓取 Discord 自訂 emoji
+custom_emoji_pattern = re.compile(r"<:.*?:([0-9]+)>")
+
+# 抓取 Unicode emoji
+unicode_emoji_pattern = re.compile(
+    "[\U0001F600-\U0001F64F"  # emoticons
+    "\U0001F300-\U0001F5FF"  # symbols & pictographs
+    "\U0001F680-\U0001F6FF"  # transport & map symbols
+    "\U0001F1E0-\U0001F1FF"  # flags
+    "]+", flags=re.UNICODE)
+
+def extract_emojis(text):
+    emojis = []
+
+    # 抓自訂 emoji
+    for match in custom_emoji_pattern.findall(text):
+        emojis.append(f"<:{match}>")  # 或直接存 ID
+
+    # 抓 Unicode emoji
+    emojis.extend(unicode_emoji_pattern.findall(text))
+
+    return emojis

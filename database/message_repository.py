@@ -1,4 +1,5 @@
 from database.db import get_connection
+from services.text_cleaner import extract_emojis
 import datetime
 
 # 負責從DB抓取資料
@@ -134,3 +135,28 @@ def get_user_activity(guild_id, user_id, days=1):
     return user_count, total_count
 
 
+def get_top_emojis(guild_id, days=3, top=5):
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    now = datetime.datetime.now(datetime.timezone.utc)
+    start_time = (now - datetime.timedelta(days=days)).isoformat()
+
+    cursor.execute("""
+        SELECT content
+        FROM messages
+        WHERE guild_id = ?
+        AND created_at >= ?
+    """, (guild_id, start_time))
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    emoji_counts = {}
+    for row in rows:
+        emojis = extract_emojis(row[0])
+        for e in emojis:
+            emoji_counts[e] = emoji_counts.get(e, 0) + 1
+
+    sorted_emojis = sorted(emoji_counts.items(), key=lambda x: x[1], reverse=True)
+    return sorted_emojis[:top]
