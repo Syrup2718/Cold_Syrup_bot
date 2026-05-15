@@ -3,6 +3,8 @@ from discord.ext import commands
 from discord import app_commands
 from services import chat_model
 
+# 負責AI聊天
+
 class Chat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

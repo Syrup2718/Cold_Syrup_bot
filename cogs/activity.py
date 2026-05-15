@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from matplotlib import rcParams
 import io
 
+# 負責活躍度
+
 rcParams['font.sans-serif'] = ['Microsoft JhengHei', 'Noto Sans CJK TC', 'Noto Emoji']
 
 

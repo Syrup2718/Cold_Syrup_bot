@@ -1,5 +1,7 @@
 import requests
 
+# AI模型函式設定
+
 def ollama_chat(prompt, model="qwen3.5:2b"):
     response = requests.post(
         "http://127.0.0.1:11434/api/chat",

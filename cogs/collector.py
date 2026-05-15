@@ -3,6 +3,8 @@ import discord
 from discord.ext import commands
 from database.message_repository import insert_msg
 
+# 負責收集訊息
+
 class Collector(commands.Cog):
     def __init__(self, bot):
         self.bot = bot

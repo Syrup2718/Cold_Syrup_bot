@@ -1,6 +1,8 @@
 from pathlib import Path
 import sqlite3
 
+# DB初始化
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = BASE_DIR / "data"
 DB_PATH = DATA_DIR / "bot.db"

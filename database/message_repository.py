@@ -1,6 +1,8 @@
 from database.db import get_connection
 import datetime
 
+# 負責從DB抓取資料
+
 def to_utc_iso(dt: datetime.datetime) -> str:
     # 確保時間統一為 UTC ISO 格式
     if dt.tzinfo is None:
@@ -10,6 +12,7 @@ def to_utc_iso(dt: datetime.datetime) -> str:
     return dt.isoformat()
 
 
+# 新增記錄
 def insert_msg(message_id, guild_id, channel_id, author_id, author_name, content, created_at):
     conn = get_connection()
     cursor = conn.cursor()
@@ -38,8 +41,7 @@ def insert_msg(message_id, guild_id, channel_id, author_id, author_name, content
     conn.commit()
     conn.close()
 
-
-
+# 
 def get_recent_messages(limit=10):
     conn = get_connection()
     cursor = conn.cursor()
@@ -77,7 +79,7 @@ def get_top_words(guild_id, scope="day", limit=10):
     conn.close()
     return rows
 
-
+# 群組成員活躍度DB抓取
 def get_member_activity(guild_id, days=1, top=5):
     conn = get_connection()
     cursor = conn.cursor()
@@ -100,7 +102,7 @@ def get_member_activity(guild_id, days=1, top=5):
     conn.close()
     return rows
 
-
+# 個人活躍度DB抓取
 def get_user_activity(guild_id, user_id, days=1):
     conn = get_connection()
     cursor = conn.cursor()

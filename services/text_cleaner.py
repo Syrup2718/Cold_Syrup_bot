@@ -1,6 +1,8 @@
 import re
 import jieba
 
+# 文字清理函式
+
 def clean_text(content: str) -> str:
     # 移除網址
     content = re.sub(r'http\S+', '', content)
