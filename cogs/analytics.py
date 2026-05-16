@@ -7,7 +7,7 @@ class Analytics(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @app_commands.command(name="emoji", description="看看你們最愛用什麼emoji")
+    @app_commands.command(name="topemoji", description="看看你們最愛用什麼emoji")
     @app_commands.describe(days="幾天之內，預設為 3")
     @app_commands.describe(days="顯示前幾名，預設為 5")
     async def topemoji(self, interaction: discord.Interaction, days: int = 7, top: int = 5):

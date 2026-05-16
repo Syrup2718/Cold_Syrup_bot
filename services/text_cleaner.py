@@ -35,8 +35,7 @@ def tokenize(content: str):
 
 
 # 抓取 Discord 自訂 emoji
-custom_emoji_pattern = re.compile(r"<:.*?:([0-9]+)>")
-
+custom_emoji_pattern = re.compile(r"<a?:([a-zA-Z0-9_]+):([0-9]+)>")
 # 抓取 Unicode emoji
 unicode_emoji_pattern = re.compile(
     "[\U0001F600-\U0001F64F"  # emoticons
@@ -47,12 +46,7 @@ unicode_emoji_pattern = re.compile(
 
 def extract_emojis(text):
     emojis = []
-
-    # 抓自訂 emoji
-    for match in custom_emoji_pattern.findall(text):
-        emojis.append(f"<:{match}>")  # 或直接存 ID
-
-    # 抓 Unicode emoji
+    for name, eid in custom_emoji_pattern.findall(text):
+        emojis.append(f"<:{name}:{eid}>")  # 或 <a:{name}:{eid}> 如果是動畫
     emojis.extend(unicode_emoji_pattern.findall(text))
-
     return emojis
