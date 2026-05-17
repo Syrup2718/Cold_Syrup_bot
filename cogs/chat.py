@@ -8,6 +8,7 @@ from services import chat_model
 class Chat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.chat_memory = {}
 
     async def build_reply_history(self, message: discord.Message, max_depth: int = 10):
         history = []
@@ -72,12 +73,19 @@ class Chat(commands.Cog):
 
         async with message.channel.typing():
             try:
+                key = (message.author.id, message.channel.id)
                 messages = []
 
-                if message.reference:
-                    history = await self.build_reply_history(message, max_depth=10)
-                    messages.extend(history)
+                # 1. 先拿短期記憶
+                history = self.chat_memory.get(key, [])
+                messages.extend(history)
 
+                # 2. 如果這次是 reply，再把 reply chain 也補進來
+                if message.reference:
+                    reply_history = await self.build_reply_history(message, max_depth=10)
+                    messages.extend(reply_history)
+
+                # 3. 加上這次使用者輸入
                 messages.append({"role": "user", "content": content})
 
                 reply = chat_model.ollama_chat(messages, model="gemma4:e2b")
@@ -87,9 +95,14 @@ class Chat(commands.Cog):
 
                 await message.reply(reply)
 
+                # 4. 更新短期記憶
+                history.append({"role": "user", "content": content})
+                history.append({"role": "assistant", "content": reply})
+                self.chat_memory[key] = history[-10:]   # 只留最近 10 則
+
             except Exception as e:
                 print("出事情惹：", e)
-                await message.reply(f"嗚嗚嗚人家想不出來啦")
+                await message.reply("嗚嗚嗚人家想不出來啦")
 
     @app_commands.command(name="chat", description="一個人太孤單嗎？")
     @app_commands.describe(context="說些話吧")
